@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.bangarharshit.ribsscreenstack.ScreenStack;
+import com.bangarharshit.ribsscreenstack.transition.CircularRevealTransition;
 import com.harshitbangar.example.R;
 import com.uber.autodispose.LifecycleScopeProvider;
 import com.uber.autodispose.ObservableScoper;
@@ -57,14 +58,14 @@ public class RootInteractor extends Interactor<RootInteractor.RootPresenter, Roo
       @Override public View buildView(ViewGroup parentView) {
         View root = LayoutInflater.from(context).inflate(R.layout.screen_1, parentView, false);
         final EditText editText = root.findViewById(R.id.enter_name);
-        Button nextButton = root.findViewById(R.id.next_button);
+        final Button nextButton = root.findViewById(R.id.next_button);
         nextButton.setOnClickListener(new View.OnClickListener() {
           @Override public void onClick(View view) {
             String name = editText.getText().toString();
             if (TextUtils.isEmpty(name)) {
               return;
             }
-            pushScreen2(name);
+            pushScreen2(name, nextButton);
           }
         });
         return root;
@@ -72,7 +73,7 @@ public class RootInteractor extends Interactor<RootInteractor.RootPresenter, Roo
     });
   }
 
-  private void pushScreen2(final String name) {
+  private void pushScreen2(final String name, final View clickedView) {
     screenStack.pushScreen(new ViewProvider() {
       @Override public View buildView(ViewGroup parentView) {
         View root = LayoutInflater.from(context).inflate(R.layout.screen_2, parentView, false);
@@ -86,7 +87,7 @@ public class RootInteractor extends Interactor<RootInteractor.RootPresenter, Roo
         });
         return root;
       }
-    });
+    }, new CircularRevealTransition(clickedView));
   }
 
   private void pushScreen3(final String name) {
